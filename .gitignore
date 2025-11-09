@@ -1,0 +1,107 @@
+# ============================================================
+# 🧠 DeepLearning Project - Git Ignore File
+# ============================================================
+
+# Ignore Udemy course materials and other private folders
+Udemy Code Files/
+Udemy Code Files/*
+
+# ============================================================
+# 🐍 Python
+# ============================================================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook checkpoints and autosaves
+.ipynb_checkpoints/
+*.ipynb_save
+*.ipynb_checkpoint
+
+# Colab-specific temp files
+/.config/
+.datalab/
+*.ipynb_runtime
+
+# ============================================================
+# 📦 Virtual Environments
+# ============================================================
+.env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# ============================================================
+# 🧾 Logs and Temp Files
+# ============================================================
+*.log
+logs/
+*.tmp
+tmp/
+*.swp
+*.swo
+
+# ============================================================
+# 💻 OS-generated Files
+# ============================================================
+.DS_Store
+.DS_Store?
+Thumbs.db
+ehthumbs.db
+Icon?
+Desktop.ini
+
+# ============================================================
+# 📁 Data and Results (Optional)
+# ============================================================
+data/
+datasets/
+results/
+*.csv
+*.tsv
+
+# ============================================================
+# ⚙️ IDE / Editor Configurations
+# ============================================================
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
