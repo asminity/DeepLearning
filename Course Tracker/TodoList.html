@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Udemy Course To-Do (Premium)</title>
+<style>
+  :root { --bg:#0f1115; --text:#e6edf3; --card:#1b2230; --border:#2a3445; --accent:#6aa8ff; }
+  body.light { --bg:#f7f9fc; --text:#0f1115; --card:#ffffff; --border:#dbe3ee; --accent:#2e6fd8; }
+
+  body { margin:0; background:var(--bg); color:var(--text); font:14px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Arial; }
+  .wrap { max-width:960px; margin:0 auto; padding:24px; }
+  header h2 { display:flex; align-items:center; justify-content:space-between; margin:0 0 16px; font-size:20px; }
+  .theme-toggle { cursor:pointer; user-select:none; font-size:18px; }
+
+  .section-card { background:var(--card); border:1px solid var(--border); border-radius:10px; margin:10px 0; overflow:hidden; }
+  .section-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px 14px; cursor:pointer; }
+  .section-title { font-weight:600; }
+  .arrow { transition: transform .25s ease; }
+
+  .controls { display:flex; align-items:center; gap:8px; }
+  .btn { background:transparent; color:var(--text); border:1px solid var(--border); border-radius:6px; padding:6px 10px; cursor:pointer; }
+  .btn.small { padding:4px 8px; font-size:12px; }
+  .btn:hover { border-color:var(--accent); }
+
+  .progress { width:140px; height:8px; background:rgba(255,255,255,.1); border:1px solid var(--border); border-radius:999px; overflow:hidden; }
+  .progress .bar { display:block; height:100%; width:0%; background:var(--accent); }
+  .count { font-size:12px; opacity:.8; }
+
+  .toolbar { display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+  .toolbar input[type="text"] { flex:1; padding:8px 10px; border:1px solid var(--border); border-radius:8px; background:var(--card); color:var(--text); }
+  .overall { display:flex; align-items:center; gap:8px; }
+  .overall-bar { width:160px; height:10px; border:1px solid var(--border); border-radius:999px; background:rgba(255,255,255,.1); overflow:hidden; }
+  .overall-bar .fill { height:100%; width:0%; background:var(--accent); }
+  .overall-count { font-size:12px; opacity:.8; }
+
+  .lectures { max-height:0; overflow:hidden; transition:max-height .3s ease; border-top:1px solid var(--border); }
+  .lecture { display:flex; align-items:center; gap:10px; padding:10px 14px; border-top:1px dashed var(--border); }
+  .lecture:first-child { border-top:none; }
+  .lecture input[type="checkbox"] { width:18px; height:18px; }
+  .lecture label { cursor:pointer; }
+
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h2>Udemy Smart To-Do <span class="theme-toggle" role="button" aria-label="Toggle theme" tabindex="0">🌗</span></h2>
+  <div class="toolbar">
+    <input id="filter" type="text" placeholder="Search sections or lectures" aria-label="Search" />
+    <div class="overall">
+      <div class="overall-bar"><div class="fill"></div></div>
+      <span class="overall-count">0/0</span>
+    </div>
+    <button class="btn small expand-all" type="button">Expand all</button>
+    <button class="btn small collapse-all" type="button">Collapse all</button>
+  </div>
+</header>
+<div id="sections"></div>
+</div>
+<script id="course-data" type="application/json">
+{
+  "sections": [
+    {"title":"Introduction","lectures":["How to learn from this course","Using Udemy like a pro"]},
+    {"title":"Download all course materials","lectures":["Downloading and using the code","My policy on code-sharing"]},
+    {"title":"Concepts in deep learning","lectures":["What is an artificial neural network?","How models learn","The role of DL in science and knowledge","Running experiments to understand DL","Are artificial neurons like biological neurons?"]},
+    {"title":"About the Python tutorial","lectures":["Should you watch the Python tutorial?"]},
+    {"title":"Math, numpy, PyTorch","lectures":["Introduction to this section","Spectral theories in mathematics","Terms and datatypes in math and computers","Converting reality to numbers","Vector and matrix transpose","OMG it's the dot product!","Matrix multiplication","Softmax","Logarithms","Entropy and cross-entropy","Min/max and argmin/argmax","Mean and variance","Random sampling and sampling variability","Reproducible randomness via seeding","The t-test","Derivatives: intuition and polynomials","Derivatives find minima","Derivatives: product and chain rules"]},
+    {"title":"Gradient descent","lectures":["Overview of gradient descent","What about local minima?","Gradient descent in 1D","CodeChallenge: unfortunate starting value","Gradient descent in 2D","CodeChallenge: 2D gradient ascent","Parametric experiments on g.d.","CodeChallenge: fixed vs. dynamic learning rate","Vanishing and exploding gradients","Tangent: Notebook revision history"]},
+    {"title":"ANNs (Artificial Neural Networks)","lectures":["The perceptron and ANN architecture","A geometric view of ANNs","ANN math part 1 (forward prop)","ANN math part 2 (errors, loss, cost)","ANN math part 3 (backprop)","ANN for regression","CodeChallenge: manipulate regression slopes","ANN for classifying qwerties","Learning rates comparison","Multilayer ANN","Linear solutions to linear problems","Why multilayer linear models don't exist","Multi-output ANN (iris dataset)","CodeChallenge: more qwerties!","Comparing the number of hidden units","Depth vs. breadth: number of parameters","Defining models using sequential vs. class","Model depth vs. breadth","CodeChallenge: convert sequential to class","Diversity of ANN visual representations","Reflection: Are DL models understandable yet?"]},
+    {"title":"Overfitting and cross-validation","lectures":["What is overfitting and is it as bad as they say?","Cross-validation","Generalization","Cross-validation -- manual separation","Cross-validation -- scikitlearn","Cross-validation -- DataLoader","Splitting data into train, devset, test","Cross-validation on regression"]},
+    {"title":"Regularization","lectures":["Regularization: Concept and methods","train() and eval() modes","Dropout regularization","Dropout regularization in practice","Dropout example 2","Weight regularization (L1/L2): math","L2 regularization in practice","L1 regularization in practice","Training in mini-batches","Batch training in action","The importance of equal batch sizes","CodeChallenge: Effects of mini-batch size"]},
+    {"title":"Metaparameters (activations, optimizers)","lectures":["What are 'metaparameters'?","The 'wine quality' dataset","CodeChallenge: Minibatch size in the wine dataset","Data normalization","The importance of data normalization","Batch normalization","Batch normalization in practice","CodeChallenge: Batch-normalize the qwerties","Activation functions","Activation functions in PyTorch","Activation functions comparison","CodeChallenge: Compare relu variants","CodeChallenge: Predict sugar","Loss functions","Loss functions in PyTorch","More practice with multioutput ANNs","Optimizers (minibatch, momentum)","SGD with momentum","Optimizers (RMSprop, Adam)","Optimizers comparison","CodeChallenge: Optimizers and... something","CodeChallenge: Adam with L2 regularization","Learning rate decay","How to pick the right metaparameters"]},
+    {"title":"FFNs (Feed-Forward Networks)","lectures":["What are fully-connected and feedforward networks?","The MNIST dataset","FFN to classify digits","CodeChallenge: Binarized MNIST images","CodeChallenge: Data normalization","Distributions of weights pre- and post-learning","CodeChallenge: MNIST and breadth vs. depth","CodeChallenge: Optimizers and MNIST","Scrambled MNIST","Shifted MNIST","CodeChallenge: The mystery of the missing 7","Universal approximation theorem"]},
+    {"title":"More on data","lectures":["Anatomy of a torch dataset and dataloader","Data size and network size","CodeChallenge: unbalanced data","What to do about unbalanced designs?","Data oversampling in MNIST","Data noise augmentation (with devset+test)","Data feature augmentation","Getting data into colab","Save and load trained models","Save the best-performing model","Where to find online datasets"]},
+    {"title":"Measuring model performance","lectures":["Two perspectives of the world","Accuracy, precision, recall, F1","APRF in code","APRF example 1: wine quality","APRF example 2: MNIST","CodeChallenge: MNIST with unequal groups","Computation time","Better performance in test than train?"]},
+    {"title":"FFN milestone projects","lectures":["Project 1: A gratuitously complex adding machine","Project 1: My solution","Project 2: Predicting heart disease","Project 2: My solution","Project 3: FFN for missing data interpolation","Project 3: My solution"]},
+    {"title":"Weight inits and investigations","lectures":["Explanation of weight matrix sizes","A surprising demo of weight initializations","Theory: Why and how to initialize weights","CodeChallenge: Weight variance inits","Xavier and Kaiming initializations","CodeChallenge: Xavier vs. Kaiming","CodeChallenge: Identically random weights","Freezing weights during learning","Learning-related changes in weights","Use default inits or apply your own?"]},
+    {"title":"Autoencoders","lectures":["What are autoencoders and what do they do?","Denoising MNIST","CodeChallenge: How many units?","AEs for occlusion","The latent code of MNIST","Autoencoder with tied weights"]},
+    {"title":"Running models on a GPU","lectures":["What is a GPU and why use it?","Implementation","CodeChallenge: Run an experiment on the GPU"]},
+    {"title":"Convolution and transformations","lectures":["Convolution: concepts","Feature maps and convolution kernels","Convolution in code","The Conv2 class in PyTorch","Convolution parameters (stride, padding)","Transpose convolution","Max/mean pooling","Pooling in PyTorch","To pool or to stride?","Image transforms","Creating and using custom DataLoaders"]},
+    {"title":"Understand and design CNNs","lectures":["The canonical CNN architecture","CNN to classify MNIST digits","CNN on shifted MNIST","Classify Gaussian blurs","Examine feature map activations","CodeChallenge: Softcoded internal parameters","CodeChallenge: How wide the FC?","Do autoencoders clean Gaussians?","CodeChallenge: AEs and occluded Gaussians","CodeChallenge: Custom loss functions","Discover the Gaussian parameters","The EMNIST dataset (letter recognition)","Dropout in CNNs","CodeChallenge: How low can you go?","CodeChallenge: Varying number of channels","So many possibilities! How to create a CNN?"]},
+    {"title":"CNN milestone projects","lectures":["Project 1: Import and classify CIFAR10","Project 1: My solution","Project 2: CIFAR-autoencoder","Project 3: FMNIST","Project 4: Psychometric functions in CNNs"]},
+    {"title":"Transfer learning","lectures":["Transfer learning: What, why, and when?","Transfer learning: MNIST -> FMNIST","CodeChallenge: letters to numbers","Famous CNN architectures","Transfer learning with ResNet-18","CodeChallenge: VGG-16","Pretraining with autoencoders","CIFAR10 with autoencoder-pretrained model"]},
+    {"title":"Style transfer","lectures":["What is style transfer and how does it work?","The Gram matrix (feature activation covariance)","The style transfer algorithm","Transferring the screaming bathtub","CodeChallenge: Style transfer with AlexNet"]},
+    {"title":"Generative adversarial networks","lectures":["GAN: What, why, and how","Linear GAN with MNIST","CodeChallenge: Linear GAN with FMNIST","CNN GAN with Gaussians","CodeChallenge: Gaussians with fewer layers","CNN GAN with FMNIST","CodeChallenge: CNN GAN with CIFAR"]},
+    {"title":"RNNs (Recurrent Neural Networks) and GRU/LSTM","lectures":["Leveraging sequences in deep learning","How RNNs work","The RNN class in PyTorch","Predicting alternating sequences","CodeChallenge: sine wave extrapolation","More on RNNs: Hidden states, embeddings","GRU and LSTM","The LSTM and GRU classes","Lorem ipsum"]},
+    {"title":"Ethics of deep learning","lectures":["Will AI save us or destroy us?","Example case studies","Some other possible ethical scenarios","Will deep learning take our jobs?","Accountability and making ethical AI"]},
+    {"title":"Where to go from here?","lectures":["How to learn topic X in deep learning?","How to read academic DL papers"]}
+  ]
+}
+</script>
+<script>
+let theme = localStorage.getItem("theme") || "dark";
+if (theme === "light") document.body.classList.add("light");
+
+const themeToggle = document.querySelector('.theme-toggle');
+themeToggle.onclick = () => {
+  document.body.classList.toggle('light');
+  localStorage.setItem('theme', document.body.classList.contains('light') ? 'light' : 'dark');
+};
+themeToggle.onkeydown = (e) => { if (e.key === 'Enter' || e.key === ' ') themeToggle.click(); };
+
+const getData = () => {
+  if (location.protocol === 'file:') {
+    const raw = document.getElementById('course-data')?.textContent;
+    if (!raw) return Promise.reject(new Error('Embedded course data not found'));
+    try { return Promise.resolve(JSON.parse(raw)); }
+    catch (e) { return Promise.reject(e); }
+  }
+  return fetch("course_content.json").then(r => r.json());
+};
+
+getData()
+  .then(data => {
+    const container = document.getElementById("sections");
+    container.innerHTML = "";
+
+    const keyLecture = (s, l) => `udemytodo::lec::${s}::${l}`;
+    const keyOpen = (s) => `udemytodo::open::${s}`;
+
+    const cards = [];
+
+    const updateOverall = () => {
+      let total = 0, done = 0;
+      cards.forEach(c => { total += c.total; done += c.done(); });
+      const pct = total ? Math.round(done/total*100) : 0;
+      document.querySelector('.overall .fill').style.width = pct + '%';
+      document.querySelector('.overall-count').textContent = `${done}/${total}`;
+    };
+
+    const applyFilter = () => {
+      const q = document.getElementById('filter').value.trim().toLowerCase();
+      cards.forEach(c => {
+        let visibleCount = 0;
+        c.rows.forEach(r => {
+          const text = r.label.textContent.toLowerCase();
+          const match = !q || text.includes(q) || c.title.toLowerCase().includes(q);
+          r.el.style.display = match ? '' : 'none';
+          if (match) visibleCount++;
+        });
+        c.card.style.display = visibleCount ? '' : 'none';
+        const shouldOpen = q && visibleCount;
+        if (shouldOpen) {
+          c.wrap.style.maxHeight = c.wrap.scrollHeight + 'px';
+          c.arrow.style.transform = 'rotate(180deg)';
+        } else {
+          // keep existing state
+          const open = c.wrap.style.maxHeight && c.wrap.style.maxHeight !== '0px';
+          c.arrow.style.transform = open ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
+      });
+    };
+
+    const buildSection = (sec) => {
+      const card = document.createElement('div');
+      card.className = 'section-card';
+
+      const head = document.createElement('div');
+      head.className = 'section-head';
+      head.innerHTML = `
+        <span class='section-title'>${sec.title}</span>
+        <span class='controls'>
+          <span class='progress'><span class='bar'></span></span>
+          <span class='count'>0/0</span>
+          <button class='btn small mark-all' type='button'>Mark all</button>
+          <button class='btn small clear-all' type='button'>Clear all</button>
+          <span class='arrow'>▼</span>
+        </span>`;
+
+      const wrap = document.createElement('div');
+      wrap.className = 'lectures';
+      // default collapsed state
+      wrap.style.maxHeight = '0px';
+      wrap.style.overflow = 'hidden';
+
+      const rows = [];
+      sec.lectures.forEach(lec => {
+        const row = document.createElement('div');
+        row.className = 'lecture';
+
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        const idLegacy = `${sec.title}::${lec}`;
+        const id = keyLecture(sec.title, lec);
+        const legacyVal = localStorage.getItem(idLegacy);
+        const curVal = localStorage.getItem(id);
+        cb.checked = (curVal === '1') || (legacyVal === '1');
+        cb.onchange = () => {
+          localStorage.setItem(id, cb.checked ? '1' : '0');
+          updateProgress();
+          updateOverall();
+        };
+
+        const label = document.createElement('label');
+        label.textContent = lec;
+        label.onclick = () => { cb.checked = !cb.checked; cb.onchange(); };
+
+        row.append(cb);
+        row.append(label);
+        wrap.append(row);
+        rows.push({ el: row, cb, label });
+      });
+
+      const arrow = head.querySelector('.arrow');
+      const bar = head.querySelector('.progress .bar');
+      const count = head.querySelector('.count');
+      const markAll = head.querySelector('.mark-all');
+      const clearAll = head.querySelector('.clear-all');
+
+      const total = rows.length;
+      const done = () => rows.reduce((a,r) => a + (r.cb.checked ? 1 : 0), 0);
+      const updateProgress = () => {
+        const d = done();
+        const pct = total ? Math.round(d/total*100) : 0;
+        bar.style.width = pct + '%';
+        count.textContent = `${d}/${total}`;
+      };
+      updateProgress();
+
+      markAll.onclick = (e) => {
+        e.stopPropagation();
+        rows.forEach(r => { if (!r.cb.checked) { r.cb.checked = true; r.cb.onchange(); } });
+      };
+      clearAll.onclick = (e) => {
+        e.stopPropagation();
+        rows.forEach(r => { if (r.cb.checked) { r.cb.checked = false; r.cb.onchange(); } });
+      };
+
+      head.onclick = () => {
+        const open = wrap.style.maxHeight && wrap.style.maxHeight !== '0px';
+        if (open) {
+          wrap.style.maxHeight = '0px';
+          arrow.style.transform = 'rotate(0deg)';
+          localStorage.setItem(keyOpen(sec.title), '0');
+        } else {
+          wrap.style.maxHeight = wrap.scrollHeight + 'px';
+          arrow.style.transform = 'rotate(180deg)';
+          localStorage.setItem(keyOpen(sec.title), '1');
+        }
+      };
+
+      card.append(head);
+      card.append(wrap);
+      container.append(card);
+
+      const savedOpen = localStorage.getItem(keyOpen(sec.title)) === '1';
+      if (savedOpen) {
+        wrap.style.maxHeight = wrap.scrollHeight + 'px';
+        arrow.style.transform = 'rotate(180deg)';
+      }
+
+      const sectionObj = { card, head, wrap, arrow, rows, title: sec.title, total, done, updateProgress };
+      cards.push(sectionObj);
+    };
+
+    data.sections.forEach(buildSection);
+    updateOverall();
+
+    document.getElementById('filter').addEventListener('input', () => { applyFilter(); cards.forEach(c => c.updateProgress()); updateOverall(); });
+    document.querySelector('.expand-all').onclick = () => {
+      cards.forEach(c => { c.wrap.style.maxHeight = c.wrap.scrollHeight + 'px'; c.arrow.style.transform = 'rotate(180deg)'; localStorage.setItem(keyOpen(c.title), '1'); });
+    };
+    document.querySelector('.collapse-all').onclick = () => {
+      cards.forEach(c => { c.wrap.style.maxHeight = '0px'; c.arrow.style.transform = 'rotate(0deg)'; localStorage.setItem(keyOpen(c.title), '0'); });
+    };
+  })
+  .catch(err => {
+    document.getElementById('sections').innerHTML = '<div style="padding:12px;">Failed to load course content.</div>';
+    console.error('Error loading course_content.json:', err);
+  });
+</script>
+</body>
+</html>
